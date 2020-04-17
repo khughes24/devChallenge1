@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.truecommerce.onetime.messagingService:electronic-trading:1.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/truecommerce/onetime/messagingService/electronic-trading/1.0/electronic-trading-1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/truecommerce/onetime/messagingService/electronic-trading/1.0/electronic-trading-1.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/truecommerce/onetime/messagingService/electronic-trading/1.0/electronic-trading-1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
