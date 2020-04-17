@@ -93,11 +93,15 @@ public class Main {
 
             String productTitle= doc.getElementsByClass("productDescription1").text();
             String productDesc = doc.getElementsByClass("productDescription2").text();
-            String productkal = doc.getElementsByClass("productKcalPer100Grams").text();
+            String productPrice = doc.getElementsByClass("productUnitPrice").text();
+            String productKal = doc.getElementsByClass("productKcalPer100Grams").text();
 
             prodItem.setName(productTitle);
             prodItem.setDescription(productDesc);
-            prodItem.setKals(productkal);
+            prodItem.setPrice(productPrice);
+            if(!productPrice.equals("")){
+                prodItem.setKals(productKal);
+            }
 
             System.out.println(prodItem);
         } catch (IOException e) {

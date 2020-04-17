@@ -16,6 +16,7 @@ import java.util.List;
 @XmlType(name = "productItem", propOrder = {
         "Name",
         "Description",
+        "Price",
         "Kals"
 })
 
@@ -24,6 +25,7 @@ import java.util.List;
 @JsonPropertyOrder({
         "Name",
         "Description",
+        "Price",
         "Kals"
 })
 
@@ -37,9 +39,16 @@ public class productItem {
     @JsonProperty("Description")
     public String description;
 
+    @XmlElement(name = "Price")
+    @JsonProperty("Price")
+    public String price;
+
     @XmlElement(name = "Kals")
     @JsonProperty("Kals")
     public String kals;
+
+
+
 
     public String getName() {
         return name;
@@ -53,6 +62,13 @@ public class productItem {
     }
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+    public void setPrice(String price) {
+        this.price = price;
     }
 
     public String getKals() {
