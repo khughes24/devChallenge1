@@ -86,6 +86,11 @@ public class Main {
     public static productItem getItemDetails(Element item){
         String suffix = item.getElementsByClass("productLink").attr("href");
         productItem prodItem = new productItem();
+        double net = 0.00;
+        double vat = 0.00;
+        double gross = 0.00;
+        double vatConstant = 0.20;
+
         try {
             // Here we create a document object and use JSoup to fetch the website
             Document doc = Jsoup.connect("http://devtools.truecommerce.net:8080" + suffix).get();
@@ -95,6 +100,10 @@ public class Main {
             String productDesc = doc.getElementsByClass("productDescription2").text();
             String productPrice = doc.getElementsByClass("productUnitPrice").text();
             String productKal = doc.getElementsByClass("productKcalPer100Grams").text();
+
+            net = net + Double.parseDouble(productPrice);
+            vat = vat + (Double.parseDouble(productPrice) * vatConstant);
+            gross = net + vat; //pretty sure this logic is right
 
             prodItem.setName(productTitle);
             prodItem.setDescription(productDesc);
