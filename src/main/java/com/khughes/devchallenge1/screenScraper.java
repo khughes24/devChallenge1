@@ -12,9 +12,20 @@ import java.util.List;
 
 public class screenScraper {
 
-    public  void getProducts(String[] args) {
-        // write your code her
-        System.out.println("Starting connection");
+    public  void getProducts(String[] args, String url) {
+        System.out.println("---Attempting connection---");
+
+
+        if(url.isEmpty()){
+            url = targetUrl.url; // Use the targetUrl constant
+            System.out.println("Warning: URL not provided, defaulting to preset URL");
+        }
+        if(!url.equals(targetUrl.url)){
+            url = targetUrl.url;
+            System.out.println("Warning: URL does not match target, defaulting to preset URL");
+        }
+
+
         ObjectMapper mapper = new ObjectMapper();
         try {
             // Here we create a document object and use JSoup to fetch the website
@@ -22,6 +33,11 @@ public class screenScraper {
 
             // With the document fetched, we use JSoup's title() method to fetch the title
             System.out.printf("Title: %s\n", doc.title());
+
+            if(doc.title() != "Kibble Stores Ltd"){
+                System.out.println("Warning: URL not provided does not match requested website");
+            }
+
 
             Elements productTags = doc.getElementsByClass("productDescription1");
             Elements productLinks = doc.getElementsByClass("productLink");
