@@ -3,6 +3,8 @@ package com.khughes.devchallenge1;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -33,48 +35,21 @@ public class productItem {
 
     @XmlElement(name = "Name")
     @JsonProperty("Name")
-    public String name;
+    @Getter
+    @Setter private String name;
 
     @XmlElement(name = "Description")
     @JsonProperty("Description")
-    public String description;
+    @Getter
+    @Setter private String description;
 
     @XmlElement(name = "Price")
     @JsonProperty("Price")
-    public String price;
+    @Getter
+    @Setter private String price;
 
     @XmlElement(name = "Kals")
     @JsonProperty("Kals")
-    public String kals;
-
-
-
-
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPrice() {
-        return price;
-    }
-    public void setPrice(String price) {
-        this.price = price;
-    }
-
-    public String getKals() {
-        return kals;
-    }
-    public void setKals(String kals) {
-        this.kals = kals;
-    }
+    @Getter
+    @Setter private String kals;
 }

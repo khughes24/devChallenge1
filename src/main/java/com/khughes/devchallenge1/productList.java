@@ -33,7 +33,7 @@ public class productList {
 
     @XmlElement(name = "Item")
     @JsonProperty("Item")
-    public List<productItem> item;
+    private List<productItem> item;
 
     @XmlElement(name = "Net")
     @JsonProperty("Net")
