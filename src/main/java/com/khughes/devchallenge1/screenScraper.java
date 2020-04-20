@@ -7,6 +7,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,10 +70,16 @@ public class screenScraper {
                 System.out.println(outList.getElementsByClass("productLink").attr("href"));
 
 
-                itemList.add(getItemDetails(outList));
+                itemList.add(getItemDetails(outList, prodList));
 
             }
             prodList.setItem(itemList);
+
+            //TODO theres gotta be a better way of rounding
+            prodList.net = BigDecimal.valueOf(prodList.net).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+            prodList.vat = BigDecimal.valueOf(prodList.vat).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+            prodList.gross = BigDecimal.valueOf(prodList.gross).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+
             System.out.println(prodList.toString());
 
             System.out.println("---------------");
@@ -95,7 +103,7 @@ public class screenScraper {
         }
     }
 
-    public  productItem getItemDetails(Element item){
+    public  productItem getItemDetails(Element item, productList prodList){
         String suffix = item.getElementsByClass("productLink").attr("href");
         productItem prodItem = new productItem();
         double net = 0.00;
@@ -113,9 +121,11 @@ public class screenScraper {
             String productPrice = doc.getElementsByClass("productUnitPrice").text();
             String productKal = doc.getElementsByClass("productKcalPer100Grams").text();
 
-            net = net + Double.parseDouble(productPrice);
-            vat = vat + (Double.parseDouble(productPrice) * vatConstant);
-            gross = net + vat; //pretty sure this logic is right
+            prodList.net = prodList.net + Double.parseDouble(productPrice);
+            prodList.vat = prodList.vat + (Double.parseDouble(productPrice) * vatConstant);
+            prodList.gross = prodList.net + prodList.vat; //pretty sure this logic is right
+
+
 
             prodItem.setName(productTitle);
             prodItem.setDescription(productDesc);
