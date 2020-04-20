@@ -44,34 +44,23 @@ public class screenScraper {
             Elements productTags = doc.getElementsByClass("productDescription1");
             Elements productLinks = doc.getElementsByClass("productLink");
 
-            for (Element product : productTags) {
-                System.out.println(product.getElementsByClass("productDescription1").text());
-            }
 
-            System.out.println("------------------");
-            System.out.println("------------------");
+
 
             ArrayList<Element> urlList = productLinks;
 
-            for(Element target : urlList){
-                System.out.println(target.getElementsByClass("productLink").attr("href"));
-            }
+
             System.out.println("");
             System.out.println("------------------");
             System.out.println("------------------");
             System.out.println("");
 
-            //arrayBuilder(urlList);
             List<Element> fixedList = removeDupes(urlList);
 
             productList prodList = new productList();
             ArrayList<productItem> itemList = new ArrayList<productItem>();
             for(Element outList : fixedList) {
-                System.out.println(outList.getElementsByClass("productLink").attr("href"));
-
-
                 itemList.add(getItemDetails(outList, prodList));
-
             }
             prodList.setItem(itemList);
 
@@ -87,15 +76,7 @@ public class screenScraper {
             String jsonResponse = mapper.writeValueAsString(prodList);
             System.out.println(jsonResponse);
 
-            /**
-             *
-
-             List <Element> fixedList = removeDupes(urlList);
-             for(Element link : fixedList){
-             System.out.println("a");
-             System.out.println(link.getElementsByClass("productLink").attr("href"));
-             }
-             */
+            additionalItems(url);
 
             // In case of any IO errors, we want the messages written to the console
         } catch (IOException e) {
@@ -114,7 +95,6 @@ public class screenScraper {
         try {
             // Here we create a document object and use JSoup to fetch the website
             Document doc = Jsoup.connect("http://devtools.truecommerce.net:8080" + suffix).get();
-            System.out.printf("Title: %s\n", doc.title());
 
             String productTitle= doc.getElementsByClass("productDescription1").text();
             String productDesc = doc.getElementsByClass("productDescription2").text();
@@ -134,7 +114,6 @@ public class screenScraper {
                 prodItem.setKals(productKal);
             }
 
-            System.out.println(prodItem);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -184,7 +163,7 @@ public class screenScraper {
             ArrayList<Element> urlList = productLinks;
 
             //arrayBuilder(urlList);
-            List<Element> fixedList = removeDupes(urlList);
+            List<Element> fixedList = removeDupesAdditional(urlList);
 
             productList prodList = new productList();
             ArrayList<productItem> itemList = new ArrayList<productItem>();
@@ -225,7 +204,7 @@ public class screenScraper {
         }
         List<Element> AdditionList = new ArrayList<>();
 
-
+    return null;
 
     }
 
@@ -266,6 +245,32 @@ public class screenScraper {
         }
 
         return null;
+    }
+
+    public  List<Element> removeDupesAdditional(List<Element> dupeList){
+        ArrayList<Element> fixedList = new ArrayList<Element>();
+        String hrefA;
+        String hrefB;
+        boolean found = false;
+        System.out.println("----------------------------------------");
+        for (Element element : dupeList){ //loop through main list
+            hrefA = element.getElementsByClass("productCrossSellLink").attr("href").toString();
+            found = false;
+            for (Element iterCheck : fixedList){ //check if what we are trying to add already exists
+                hrefB = iterCheck.getElementsByClass("productCrossSellLink").attr("href").toString();
+                if(hrefA.equals(hrefB)){
+                    found = true;
+                }
+            }
+            for (Element iterCheck : dupeList){
+                hrefB = iterCheck.getElementsByClass("productCrossSellLink").attr("href").toString();
+                if(hrefA.equals(hrefB) && found == false){
+                    found = true;
+                    fixedList.add(element);
+                }
+            }
+        }
+        return  fixedList;
     }
 
 }
