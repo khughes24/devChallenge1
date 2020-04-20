@@ -173,5 +173,99 @@ public class screenScraper {
     }
 
 
+    public List<Element> additionalItems(String url){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            // Here we create a document object and use JSoup to fetch the website
+            Document doc = Jsoup.connect(url).get();
+
+            Elements productLinks = doc.getElementsByClass("productCrossSellLink");
+
+            ArrayList<Element> urlList = productLinks;
+
+            //arrayBuilder(urlList);
+            List<Element> fixedList = removeDupes(urlList);
+
+            productList prodList = new productList();
+            ArrayList<productItem> itemList = new ArrayList<productItem>();
+            for(Element outList : fixedList) {
+                System.out.println(outList.getElementsByClass("productLink").attr("href"));
+
+
+                itemList.add(additionalItems(outList, prodList));
+
+            }
+            prodList.setItem(itemList);
+
+            //TODO theres gotta be a better way of rounding
+            prodList.net = BigDecimal.valueOf(prodList.net).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+            prodList.vat = BigDecimal.valueOf(prodList.vat).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+            prodList.gross = BigDecimal.valueOf(prodList.gross).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+
+            System.out.println(prodList.toString());
+
+            System.out.println("---------------");
+            System.out.println("");
+            String jsonResponse = mapper.writeValueAsString(prodList);
+            System.out.println(jsonResponse);
+
+            /**
+             *
+
+             List <Element> fixedList = removeDupes(urlList);
+             for(Element link : fixedList){
+             System.out.println("a");
+             System.out.println(link.getElementsByClass("productLink").attr("href"));
+             }
+             */
+
+            // In case of any IO errors, we want the messages written to the console
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<Element> AdditionList = new ArrayList<>();
+
+
+
+    }
+
+
+    public productItem additionalItems(Element item, productList prodList){
+        String suffix = item.getElementsByClass("productCrossSellLink").attr("href");
+        productItem prodItem = new productItem();
+        double net = 0.00;
+        double vat = 0.00;
+        double gross = 0.00;
+        double vatConstant = 0.20;
+
+        try {
+            // Here we create a document object and use JSoup to fetch the website
+            Document doc = Jsoup.connect("http://devtools.truecommerce.net:8080" + suffix).get();
+            System.out.printf("Title: %s\n", doc.title());
+
+            String productTitle= doc.getElementsByClass("productDescription1").text();
+            String productPrice = doc.getElementsByClass("productUnitPrice").text();
+            String productKal = doc.getElementsByClass("productKcalPer100Grams").text();
+
+            prodList.net = prodList.net + Double.parseDouble(productPrice);
+            prodList.vat = prodList.vat + (Double.parseDouble(productPrice) * vatConstant);
+            prodList.gross = prodList.net + prodList.vat; //pretty sure this logic is right
+
+
+
+            prodItem.setName(productTitle);
+            prodItem.setDescription(""); //Additionals dont have descriptions
+            prodItem.setPrice(productPrice);
+            if(!productPrice.equals("")){
+                prodItem.setKals(productKal);
+            }
+
+            System.out.println(prodItem);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
 }
