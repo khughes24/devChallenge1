@@ -78,9 +78,14 @@ public class screenScraper {
 
             additionalItems(url);
 
-            // In case of any IO errors, we want the messages written to the console
+            // Error
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e);
+            System.out.println("");
+            System.out.println("Error: Cannot connect to requested website, please check connection. Restarting....");
+            System.out.println("");
+            System.out.println("");
+            Main.main(new String[]{""});
         }
     }
 
