@@ -76,7 +76,25 @@ public class screenScraper {
             String jsonResponse = mapper.writeValueAsString(prodList);
             System.out.println(jsonResponse);
 
-            additionalItems(url);
+            productList addList = new productList();
+
+            addList = additionalItems(url);
+
+            for(productItem add : addList.getItem()){
+                prodList.getItem().add(add);
+            }
+            prodList.net = prodList.net + addList.net;
+            prodList.vat = prodList.vat + addList.vat;
+            prodList.gross = prodList.gross + addList.gross;
+
+            prodList.net = BigDecimal.valueOf(prodList.net).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+            prodList.vat = BigDecimal.valueOf(prodList.vat).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+            prodList.gross = BigDecimal.valueOf(prodList.gross).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+
+            System.out.println("---------------");
+            System.out.println("");
+            jsonResponse = mapper.writeValueAsString(prodList);
+            System.out.println(jsonResponse);
 
             // Error
         } catch (IOException e) {
@@ -157,7 +175,7 @@ public class screenScraper {
     }
 
 
-    public List<Element> additionalItems(String url){
+    public productList additionalItems(String url){
         ObjectMapper mapper = new ObjectMapper();
         try {
             // Here we create a document object and use JSoup to fetch the website
@@ -202,15 +220,13 @@ public class screenScraper {
              System.out.println(link.getElementsByClass("productLink").attr("href"));
              }
              */
-
+            return prodList;
             // In case of any IO errors, we want the messages written to the console
         } catch (IOException e) {
             e.printStackTrace();
         }
-        List<Element> AdditionList = new ArrayList<>();
 
-    return null;
-
+        return null;
     }
 
 
@@ -254,21 +270,36 @@ public class screenScraper {
 
     public  List<Element> removeDupesAdditional(List<Element> dupeList){
         ArrayList<Element> fixedList = new ArrayList<Element>();
+
+        ArrayList<Element> filteredList = new ArrayList<>();
         String hrefA;
         String hrefB;
         boolean found = false;
         System.out.println("----------------------------------------");
-        for (Element element : dupeList){ //loop through main list
-            hrefA = element.getElementsByClass("productCrossSellLink").attr("href").toString();
+
+
+
+        for (Element element : dupeList){
+            System.out.println(element.getElementsByClass("productCrossSellDescription").text());
+            if(!element.getElementsByClass("productCrossSellDescription").text().equals("")){
+                filteredList.add(element);
+            }
+        }
+
+
+
+        for (Element element : filteredList){ //loop through main list
+            System.out.println(element.getElementsByClass("productCrossSellLink"));
+            hrefA = element.getElementsByClass("productCrossSellDescription").text();
             found = false;
             for (Element iterCheck : fixedList){ //check if what we are trying to add already exists
-                hrefB = iterCheck.getElementsByClass("productCrossSellLink").attr("href").toString();
+                hrefB = iterCheck.getElementsByClass("productCrossSellDescription").text();
                 if(hrefA.equals(hrefB)){
                     found = true;
                 }
             }
-            for (Element iterCheck : dupeList){
-                hrefB = iterCheck.getElementsByClass("productCrossSellLink").attr("href").toString();
+            for (Element iterCheck : filteredList){
+                hrefB = iterCheck.getElementsByClass("productCrossSellDescription").text();
                 if(hrefA.equals(hrefB) && found == false){
                     found = true;
                     fixedList.add(element);
