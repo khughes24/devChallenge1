@@ -194,7 +194,7 @@ public class screenScraper {
                 System.out.println(outList.getElementsByClass("productLink").attr("href"));
 
 
-                itemList.add(additionalItems(outList, prodList));
+                itemList.add(additionalItemsDetail(outList, prodList));
 
             }
             prodList.setItem(itemList);
@@ -230,7 +230,7 @@ public class screenScraper {
     }
 
 
-    public productItem additionalItems(Element item, productList prodList){
+    public productItem additionalItemsDetail(Element item, productList prodList){
         String suffix = item.getElementsByClass("productCrossSellLink").attr("href");
         productItem prodItem = new productItem();
         double net = 0.00;
@@ -265,7 +265,7 @@ public class screenScraper {
             e.printStackTrace();
         }
 
-        return null;
+        return prodItem;
     }
 
     public  List<Element> removeDupesAdditional(List<Element> dupeList){
