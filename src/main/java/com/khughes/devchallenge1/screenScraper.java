@@ -14,10 +14,18 @@ import java.util.List;
 
 public class screenScraper {
 
-    public  void getProducts(String[] args, String url) {
+
+    /**
+     *Connects to a the requested url and then gets a list of products along with they're total price. This is then output as a JSON
+     * @param args
+     * @param url
+     * @param additionalFlag
+     */
+    public  void getProducts(String[] args, String url, boolean additionalFlag) {
+
         System.out.println("---Attempting connection---");
 
-
+        //Error handling, and default correcting
         if(url.isEmpty()){
             url = targetUrl.url; // Use the targetUrl constant
             System.out.println("Warning: URL not provided, defaulting to preset URL");
@@ -40,64 +48,55 @@ public class screenScraper {
                 System.out.println("Warning: URL not provided does not match requested website");
             }
 
+            ArrayList<Element> urlList = doc.getElementsByClass("productLink"); // Get a list of the productLinks from the target site
 
-            Elements productTags = doc.getElementsByClass("productDescription1");
-            Elements productLinks = doc.getElementsByClass("productLink");
-
-
-
-
-            ArrayList<Element> urlList = productLinks;
-
-
-            System.out.println("");
-            System.out.println("------------------");
-            System.out.println("------------------");
-            System.out.println("");
-
-            List<Element> fixedList = removeDupes(urlList);
+            List<Element> fixedList = removeDupes(urlList); //Remove the duplicates from the urlList
 
             productList prodList = new productList();
             ArrayList<productItem> itemList = new ArrayList<productItem>();
-            for(Element outList : fixedList) {
+
+            for(Element outList : fixedList) { //loop throught the productLinks and add the item details to the itemList
                 itemList.add(getItemDetails(outList, prodList));
             }
             prodList.setItem(itemList);
 
-            //TODO theres gotta be a better way of rounding
+            //Round the values to 2 decimal places
             prodList.net = BigDecimal.valueOf(prodList.net).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
             prodList.vat = BigDecimal.valueOf(prodList.vat).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
             prodList.gross = BigDecimal.valueOf(prodList.gross).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
 
-            System.out.println(prodList.toString());
 
-            System.out.println("---------------");
+
+
+            String jsonResponse = mapper.writeValueAsString(prodList); //convert the objects into a outputable JSON string
             System.out.println("");
-            String jsonResponse = mapper.writeValueAsString(prodList);
             System.out.println(jsonResponse);
 
-            productList addList = new productList();
 
-            addList = additionalItems(url);
+            if(additionalFlag == true){ //Do we want to show the user the extra items or not
+                productList addList = new productList();
+                addList = additionalItems(url);
 
-            for(productItem add : addList.getItem()){
-                prodList.getItem().add(add);
+                for(productItem add : addList.getItem()){
+                    prodList.getItem().add(add);
+                }
+                //Add the additional Items values to the main item values
+                prodList.net = prodList.net + addList.net;
+                prodList.vat = prodList.vat + addList.vat;
+                prodList.gross = prodList.gross + addList.gross;
+
+                //Round the values to 2 decimal places
+                prodList.net = BigDecimal.valueOf(prodList.net).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
+                prodList.vat = BigDecimal.valueOf(prodList.vat).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+                prodList.gross = BigDecimal.valueOf(prodList.gross).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
+
+
+                jsonResponse = mapper.writeValueAsString(prodList); //convert the objects into a outputable JSON string
+                System.out.println("");
+                System.out.println(jsonResponse);
             }
-            prodList.net = prodList.net + addList.net;
-            prodList.vat = prodList.vat + addList.vat;
-            prodList.gross = prodList.gross + addList.gross;
 
-            prodList.net = BigDecimal.valueOf(prodList.net).setScale(2, RoundingMode.HALF_EVEN).doubleValue();
-            prodList.vat = BigDecimal.valueOf(prodList.vat).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
-            prodList.gross = BigDecimal.valueOf(prodList.gross).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
-
-            System.out.println("---------------");
-            System.out.println("");
-            jsonResponse = mapper.writeValueAsString(prodList);
-            System.out.println(jsonResponse);
-
-            // Error
-        } catch (IOException e) {
+        } catch (IOException e) { // Error handling, prints out the exception and calls the startup function to restart
             System.out.println(e);
             System.out.println("");
             System.out.println("Error: Cannot connect to requested website, please check connection. Restarting....");
@@ -107,6 +106,12 @@ public class screenScraper {
         }
     }
 
+    /**
+     * Uses the parsed element to connect to a page, the item details are then gathered and then returned
+     * @param item
+     * @param prodList
+     * @return
+     */
     public  productItem getItemDetails(Element item, productList prodList){
         String suffix = item.getElementsByClass("productLink").attr("href");
         productItem prodItem = new productItem();
@@ -175,6 +180,11 @@ public class screenScraper {
     }
 
 
+    /**
+     * Gets a list of additional Items and then returns the list
+     * @param url
+     * @return
+     */
     public productList additionalItems(String url){
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -211,15 +221,7 @@ public class screenScraper {
             String jsonResponse = mapper.writeValueAsString(prodList);
             System.out.println(jsonResponse);
 
-            /**
-             *
 
-             List <Element> fixedList = removeDupes(urlList);
-             for(Element link : fixedList){
-             System.out.println("a");
-             System.out.println(link.getElementsByClass("productLink").attr("href"));
-             }
-             */
             return prodList;
             // In case of any IO errors, we want the messages written to the console
         } catch (IOException e) {
@@ -230,6 +232,12 @@ public class screenScraper {
     }
 
 
+    /**
+     * Uses the parsed element to connect to the addtional item page, the itme details are then gathered and then returned
+     * @param item
+     * @param prodList
+     * @return
+     */
     public productItem additionalItemsDetail(Element item, productList prodList){
         String suffix = item.getElementsByClass("productCrossSellLink").attr("href");
         productItem prodItem = new productItem();
@@ -268,6 +276,12 @@ public class screenScraper {
         return prodItem;
     }
 
+
+    /**
+     * Sorts the list of additional item links into a unique list
+     * @param dupeList
+     * @return
+     */
     public  List<Element> removeDupesAdditional(List<Element> dupeList){
         ArrayList<Element> fixedList = new ArrayList<Element>();
 
