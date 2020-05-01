@@ -125,6 +125,7 @@ public class screenScraper {
             Document doc = Jsoup.connect("http://devtools.truecommerce.net:8080" + suffix).get();
 
             String productTitle= doc.getElementsByClass("productDescription1").text();
+            String productCode = doc.getElementsByClass("productItemCode").text();
             String productDesc = doc.getElementsByClass("productDescription2").text();
             String productPrice = doc.getElementsByClass("productUnitPrice").text();
             String productKal = doc.getElementsByClass("productKcalPer100Grams").text();
@@ -138,6 +139,7 @@ public class screenScraper {
             prodItem.setName(productTitle);
             prodItem.setDescription(productDesc);
             prodItem.setPrice(productPrice);
+            prodItem.setCode(productCode);
             if(!productPrice.equals("")){
                 prodItem.setKals(productKal);
             }
@@ -254,6 +256,7 @@ public class screenScraper {
             String productTitle= doc.getElementsByClass("productDescription1").text();
             String productPrice = doc.getElementsByClass("productUnitPrice").text();
             String productKal = doc.getElementsByClass("productKcalPer100Grams").text();
+            String productCode = doc.getElementsByClass("productItemCode").text();
 
             prodList.net = prodList.net + Double.parseDouble(productPrice);
             prodList.vat = prodList.vat + (Double.parseDouble(productPrice) * vatConstant);
@@ -264,6 +267,7 @@ public class screenScraper {
             prodItem.setName(productTitle);
             prodItem.setDescription(""); //Additionals dont have descriptions
             prodItem.setPrice(productPrice);
+            prodItem.setCode(productCode);
             if(!productPrice.equals("")){
                 prodItem.setKals(productKal);
             }

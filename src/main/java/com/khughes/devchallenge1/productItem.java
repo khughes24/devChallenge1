@@ -16,40 +16,50 @@ import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "productItem", propOrder = {
-        "Name",
-        "Description",
-        "Price",
-        "Kals"
+        "Title",
+        "Code",
+        "Kcal_per_100g",
+        "Unit_price",
+        "Description"
 })
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
-        "Name",
-        "Description",
-        "Price",
-        "Kals"
+        "Title",
+        "Code",
+        "Kcal_per_100g",
+        "Unit_price",
+        "Description"
+
 })
 
-public class productItem {
+public class  productItem {
 
-    @XmlElement(name = "Name")
-    @JsonProperty("Name")
+    @XmlElement(name = "Title")
+    @JsonProperty("Title")
     @Getter
     @Setter private String name;
+
+    @XmlElement(name = "Code")
+    @JsonProperty("Code")
+    @Getter
+    @Setter private String code;
+
+    @XmlElement(name = "Kcal_per_100g")
+    @JsonProperty("Kcal_per_100g")
+    @Getter
+    @Setter private String kals;
+
+    @XmlElement(name = "Unit_price")
+    @JsonProperty("Unit_price")
+    @Getter
+    @Setter private String price;
 
     @XmlElement(name = "Description")
     @JsonProperty("Description")
     @Getter
     @Setter private String description;
 
-    @XmlElement(name = "Price")
-    @JsonProperty("Price")
-    @Getter
-    @Setter private String price;
 
-    @XmlElement(name = "Kals")
-    @JsonProperty("Kals")
-    @Getter
-    @Setter private String kals;
 }

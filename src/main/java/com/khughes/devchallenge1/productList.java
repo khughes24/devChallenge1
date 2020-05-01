@@ -14,7 +14,7 @@ import java.util.List;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "productList", propOrder = {
-        "Item",
+        "Result",
         "Net",
         "VAT",
         "Gross"
@@ -23,7 +23,7 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Generated("com.googlecode.jsonschema2pojo")
 @JsonPropertyOrder({
-        "Item",
+        "Result",
         "Net",
         "VAT",
         "Gross"
@@ -31,8 +31,8 @@ import java.util.List;
 
 public class productList {
 
-    @XmlElement(name = "Item")
-    @JsonProperty("Item")
+    @XmlElement(name = "Result")
+    @JsonProperty("Result")
     private List<productItem> item;
 
     @XmlElement(name = "Net")
