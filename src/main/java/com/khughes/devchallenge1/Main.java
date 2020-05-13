@@ -33,9 +33,16 @@ public class Main {
         if(breakResponse.toLowerCase().equals("y")){
             additionalFlag = true;
         }
+        System.out.println("Product scraper: Would you like the data output as a PDF: (y/n)");
+        scanner = new Scanner(System.in);
+        String pdfResponse = scanner.nextLine();
+        boolean pdfFlag = false;
+        if(pdfResponse.toLowerCase().equals("y")){
+            pdfFlag = true;
+        }
 
         screenScraper scraper = new screenScraper();
-        scraper.getProducts(args,url, additionalFlag);
+        scraper.getProducts(args,url, additionalFlag, pdfFlag);
     }
 
 

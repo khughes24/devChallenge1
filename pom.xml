@@ -82,6 +82,11 @@
             <version>1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.0.6</version>
+        </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
@@ -115,6 +120,8 @@
             <version>1.18.12</version>
             <scope>provided</scope>
         </dependency>
+
+
 
     </dependencies>
     <build>

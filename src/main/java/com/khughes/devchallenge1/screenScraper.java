@@ -21,8 +21,8 @@ public class screenScraper {
      * @param url
      * @param additionalFlag
      */
-    public  void getProducts(String[] args, String url, boolean additionalFlag) {
-
+    public  void getProducts(String[] args, String url, boolean additionalFlag, boolean pdfFlag) {
+        PDFGenerator pdfGenerator = new PDFGenerator();
         System.out.println("---Attempting connection---");
 
         //Error handling, and default correcting
@@ -71,6 +71,10 @@ public class screenScraper {
             String jsonResponse = mapper.writeValueAsString(prodList); //convert the objects into a outputable JSON string
             System.out.println("");
             System.out.println(jsonResponse);
+            if(pdfFlag == true){
+                pdfGenerator.generatePDF(jsonResponse,url, doc.title(), prodList);
+            }
+
 
 
             if(additionalFlag == true){ //Do we want to show the user the extra items or not
@@ -94,6 +98,11 @@ public class screenScraper {
                 jsonResponse = mapper.writeValueAsString(prodList); //convert the objects into a outputable JSON string
                 System.out.println("");
                 System.out.println(jsonResponse);
+                if(pdfFlag == true){
+                    pdfGenerator.generatePDF(jsonResponse,url, doc.title(), prodList);
+                }
+
+
             }
 
         } catch (IOException e) { // Error handling, prints out the exception and calls the startup function to restart
