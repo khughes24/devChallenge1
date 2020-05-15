@@ -30,3 +30,10 @@ This will determine if the system will show just the main products or the main p
 This will determine if the system will generate an additional PDF of the product selection or not. If chosen the the PDF will be saved on the root file of the project with the name "ScreenScrape.pdf". If the PDF fails to generate please make sure that your current copy is closed and try again.
 
 
+Libraries used
+
+Lombok - Used to auto generate getters and setters for some classses, sped up the production of the code in those areas
+
+FasterJackson - Used to handle JSONs in the project, allows for the convertion from objects to JSON and vica versa
+
+JSOUP - Used to access webpages and get data from the said pages
