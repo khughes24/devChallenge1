@@ -3,19 +3,24 @@ package com.khughes.devchallenge1;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.sun.scenario.effect.ImageData;
 
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.util.Base64;
 
 
 public class PDFGenerator {
 
 
-    public boolean generatePDF(String dataStream, String siteAddress, String siteTitle, productList prodList){
+    public boolean generatePDF(String dataStream, String siteAddress, String siteTitle, productList prodList, String imgUrl){
 
         boolean generationStatus = true; //everything is ok
 
         Document document = new Document();
+        document.setPageSize(PageSize.A4.rotate());
 
         System.out.println(prodList.getItem());
 
@@ -24,7 +29,10 @@ public class PDFGenerator {
                     new FileOutputStream("ScreenScrape.pdf"));
 
             document.open();
-
+            //add a photo of the website we are scraping
+            Image image = Image.getInstance(imgUrl);
+            image.scaleToFit(750,250);
+            document.add(image);
             Font fontHead = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD | Font.UNDERLINE);
             Font fontBody = new Font(Font.FontFamily.HELVETICA,10);
 
@@ -37,6 +45,11 @@ public class PDFGenerator {
             headerParagraph.setIndentationLeft(50);
             headerParagraph.setIndentationRight(50);
             document.add(headerParagraph);
+
+            //try and add a table
+            // Creating a table object
+            float [] pointColumnWidths = {150F, 150F, 150F};
+            Table table = new Table(pointColumnWidths);
 
             document.add(new Paragraph("Data captured from: " + siteTitle + ".",fontBody)
 
@@ -114,6 +127,10 @@ public class PDFGenerator {
             generationStatus = false; //something failed so set the status to failed
             e.printStackTrace();
             System.out.println("Unable to create Document. Please check if the document is open or in use");
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         return generationStatus;

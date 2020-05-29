@@ -72,7 +72,9 @@ public class screenScraper {
             System.out.println("");
             System.out.println(jsonResponse);
             if(pdfFlag == true){
-                pdfGenerator.generatePDF(jsonResponse,url, doc.title(), prodList);
+                Element imageElement = doc.select("img").first();
+                String imgUrl = imageElement.absUrl("src");
+                pdfGenerator.generatePDF(jsonResponse,url, doc.title(), prodList,imgUrl);
             }
 
 
@@ -99,7 +101,9 @@ public class screenScraper {
                 System.out.println("");
                 System.out.println(jsonResponse);
                 if(pdfFlag == true){
-                    pdfGenerator.generatePDF(jsonResponse,url, doc.title(), prodList);
+                    Element imageElement = doc.select("img").first();
+                    String imgUrl = imageElement.absUrl("src");
+                    pdfGenerator.generatePDF(jsonResponse,url, doc.title(), prodList,imgUrl);
                 }
 
 
