@@ -22,7 +22,11 @@
             <artifactId>jsoup</artifactId>
             <version>1.11.3</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.truecommerce</groupId>
+            <artifactId>model</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

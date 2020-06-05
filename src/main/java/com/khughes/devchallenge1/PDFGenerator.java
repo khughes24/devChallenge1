@@ -2,26 +2,41 @@ package com.khughes.devchallenge1;
 
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.PdfTable;
 import com.sun.scenario.effect.ImageData;
+import com.truecommerce.onetime.messagingService.common.utils.DateTime;
+import com.truecommerce.docs.common.components.*;
 
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Base64;
+import java.util.GregorianCalendar;
 
 
 public class PDFGenerator {
 
 
-    public boolean generatePDF(String dataStream, String siteAddress, String siteTitle, productList prodList, String imgUrl){
+    public boolean generatePDF(String dataStream, String siteAddress, String siteTitle, productList prodList, String imgUrl, boolean additionalItems){
 
         boolean generationStatus = true; //everything is ok
 
         Document document = new Document();
         document.setPageSize(PageSize.A4.rotate());
-
+        com.truecommerce.docs.common.components.DateTime now = new com.truecommerce.docs.common.components.DateTime();
+        try{
+            GregorianCalendar cal = new GregorianCalendar();
+            XMLGregorianCalendar nowInXML = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+            now.setTime(nowInXML);
+            now.setDate(nowInXML);
+        }catch (Exception ex){
+            ex.printStackTrace();
+        }
         System.out.println(prodList.getItem());
 
         try {
@@ -48,26 +63,45 @@ public class PDFGenerator {
 
             //try and add a table
             // Creating a table object
-            float [] pointColumnWidths = {150F, 150F, 150F};
-            Table table = new Table(pointColumnWidths);
 
-            document.add(new Paragraph("Data captured from: " + siteTitle + ".",fontBody)
+            document.add(new Paragraph("Site Details",fontBody));
+            PdfPTable table = new PdfPTable(2);
+            table.setSplitLate(false);
+            table.setWidths(new int[]{1,15});
+
+            table.addCell(String.valueOf("Site Name"));
+            table.addCell(String.valueOf(siteTitle));
+
+            table.addCell(String.valueOf("Site Address"));
+            table.addCell(String.valueOf(siteAddress));
+
+            table.addCell(String.valueOf("Date Gathered"));
+            table.addCell(String.valueOf(now.getDate() + "" + now.getTime()));
+
+            document.add(table);
 
 
-            );
-            Paragraph paragraphInfo1 = new Paragraph();
-            paragraphInfo1.setSpacingAfter(10);
-            paragraphInfo1.setSpacingBefore(25);
-            Chunk chunkInfo1 = new Chunk("Data available at: " + siteAddress + ".", fontBody);
-            paragraphInfo1.add(chunkInfo1);
-            document.add(paragraphInfo1);
 
-            Paragraph paragraphInfo2 = new Paragraph();
-            paragraphInfo1.setSpacingAfter(25);
-            Chunk chunkInfo2 = new Chunk("Please find the data extraction below: ", fontBody);
-            paragraphInfo2.add(chunkInfo2);
-            document.add(paragraphInfo2);
+            document.add(new Paragraph("Item Details",fontBody));
+            PdfPTable itemTable = new PdfPTable(2);
+            itemTable.setSplitLate(false);
+            itemTable.setWidths(new int[]{1,15});
 
+            itemTable.addCell(String.valueOf("Total Item Count"));
+            itemTable.addCell(String.valueOf(prodList.getItem().size()));
+
+            itemTable.addCell(String.valueOf("Standard Item Count"));
+            itemTable.addCell(String.valueOf(prodList.getItem().size()));
+
+            itemTable.addCell(String.valueOf("Additional Item Count"));
+            if(additionalItems == true){
+                itemTable.addCell(String.valueOf(prodList.getItem().size()));
+            }else{
+                itemTable.addCell(String.valueOf("N/A"));
+            }
+
+
+            document.add(itemTable);
 
             for(productItem item : prodList.getItem()){
                 Paragraph jsonName = new Paragraph();
@@ -117,6 +151,21 @@ public class PDFGenerator {
                 document.add(jsonDescription);
             }
 
+            document.add(new Paragraph("Price Break Down",fontBody));
+            PdfPTable priceTable = new PdfPTable(2);
+            priceTable.setSplitLate(false);
+            priceTable.setWidths(new int[]{1,15});
+
+            priceTable.addCell(String.valueOf("Total Price"));
+            priceTable.addCell(String.valueOf("£" + ""));
+
+            priceTable.addCell(String.valueOf("Gross"));
+            priceTable.addCell(String.valueOf("£" + ""));
+
+            priceTable.addCell(String.valueOf("Net"));
+            priceTable.addCell(String.valueOf("£" + ""));
+
+            document.add(priceTable);
 
             document.close();
 
