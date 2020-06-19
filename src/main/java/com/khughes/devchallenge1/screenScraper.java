@@ -6,6 +6,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import javax.print.attribute.standard.DocumentName;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,6 +14,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class screenScraper {
+
+
+    public Document getConnection(String url){
+        try {
+            Document doc = Jsoup.connect("http://devtools.truecommerce.net:8080/challenge001/").get();
+            return doc;
+        }catch (IOException e) { // Error handling, prints out the exception and calls the startup function to restart
+            System.out.println(e);
+            System.out.println("");
+            System.out.println("Error: Cannot connect to requested website, please check connection. Restarting....");
+            System.out.println("");
+            System.out.println("");
+            Main.main(new String[]{""});
+        }
+        return null;
+    }
 
 
     /**
@@ -39,7 +56,7 @@ public class screenScraper {
         ObjectMapper mapper = new ObjectMapper();
         try {
             // Here we create a document object and use JSoup to fetch the website
-            Document doc = Jsoup.connect("http://devtools.truecommerce.net:8080/challenge001/").get();
+            Document doc = getConnection(url);
 
             // With the document fetched, we use JSoup's title() method to fetch the title
             System.out.printf("Title: %s\n", doc.title());
