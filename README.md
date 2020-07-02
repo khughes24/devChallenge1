@@ -37,3 +37,9 @@ Lombok - Used to auto generate getters and setters for some classses, sped up th
 FasterJackson - Used to handle JSONs in the project, allows for the convertion from objects to JSON and vica versa
 
 JSOUP - Used to access webpages and get data from the said pages
+
+C# Version
+
+To access the C# version of the project please go to the following repo:
+https://github.com/khughes24/devChallenge1VS
+
