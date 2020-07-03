@@ -41,5 +41,5 @@ JSOUP - Used to access webpages and get data from the said pages
 C# Version
 
 To access the C# version of the project please go to the following repo:
-https://github.com/khughes24/devChallenge1VS
+https://github.com/khughes24/devChallenge1CSharp
 
