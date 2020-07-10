@@ -37,7 +37,7 @@ public class PDFGenerator {
         }catch (Exception ex){
             ex.printStackTrace();
         }
-        System.out.println(prodList.getItem());
+        //System.out.println(prodList.getItem());
 
         try {
             PdfWriter.getInstance(document,
@@ -175,6 +175,7 @@ public class PDFGenerator {
         } catch (FileNotFoundException e) {
             generationStatus = false; //something failed so set the status to failed
             e.printStackTrace();
+            //left in this system out as its a key error output
             System.out.println("Unable to create Document. Please check if the document is open or in use");
         } catch (MalformedURLException e) {
             e.printStackTrace();

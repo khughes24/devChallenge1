@@ -40,16 +40,16 @@ public class screenScraper {
      */
     public  void getProducts(String[] args, String url, boolean additionalFlag, boolean pdfFlag) {
         PDFGenerator pdfGenerator = new PDFGenerator();
-        System.out.println("---Attempting connection---");
+        //System.out.println("---Attempting connection---");
 
         //Error handling, and default correcting
         if(url.isEmpty()){
             url = targetUrl.url; // Use the targetUrl constant
-            System.out.println("Warning: URL not provided, defaulting to preset URL");
+            //System.out.println("Warning: URL not provided, defaulting to preset URL");
         }
         if(!url.equals(targetUrl.url)){
             url = targetUrl.url;
-            System.out.println("Warning: URL does not match target, defaulting to preset URL");
+            //System.out.println("Warning: URL does not match target, defaulting to preset URL");
         }
 
 
@@ -59,10 +59,10 @@ public class screenScraper {
             Document doc = getConnection(url);
 
             // With the document fetched, we use JSoup's title() method to fetch the title
-            System.out.printf("Title: %s\n", doc.title());
+            //System.out.printf("Title: %s\n", doc.title());
 
             if(doc.title() != "Kibble Stores Ltd"){
-                System.out.println("Warning: URL not provided does not match requested website");
+                //System.out.println("Warning: URL not provided does not match requested website");
             }
 
             ArrayList<Element> urlList = doc.getElementsByClass("productLink"); // Get a list of the productLinks from the target site
@@ -86,15 +86,6 @@ public class screenScraper {
 
 
             String jsonResponse = mapper.writeValueAsString(prodList); //convert the objects into a outputable JSON string
-            System.out.println("");
-            System.out.println(jsonResponse);
-            if(pdfFlag == true){
-                Element imageElement = doc.select("img").first();
-                String imgUrl = imageElement.absUrl("src");
-                pdfGenerator.generatePDF(jsonResponse,url, doc.title(), prodList,imgUrl, false);
-            }
-
-
 
             if(additionalFlag == true){ //Do we want to show the user the extra items or not
                 productList addList = new productList();
@@ -122,14 +113,20 @@ public class screenScraper {
                     String imgUrl = imageElement.absUrl("src");
                     pdfGenerator.generatePDF(jsonResponse,url, doc.title(), prodList,imgUrl, true);
                 }
-
-
+            }else{
+                System.out.println("");
+                System.out.println(jsonResponse);
+                if(pdfFlag == true){
+                    Element imageElement = doc.select("img").first();
+                    String imgUrl = imageElement.absUrl("src");
+                    pdfGenerator.generatePDF(jsonResponse,url, doc.title(), prodList,imgUrl, false);
+                }
             }
 
         } catch (IOException e) { // Error handling, prints out the exception and calls the startup function to restart
             System.out.println(e);
             System.out.println("");
-            System.out.println("Error: Cannot connect to requested website, please check connection. Restarting....");
+            //System.out.println("Error: Cannot connect to requested website, please check connection. Restarting....");
             System.out.println("");
             System.out.println("");
             Main.main(new String[]{""});
@@ -190,7 +187,7 @@ public class screenScraper {
         String hrefA;
         String hrefB;
         boolean found = false;
-        System.out.println("----------------------------------------");
+        //System.out.println("----------------------------------------");
         for (Element element : dupeList){ //loop through main list
             hrefA = element.getElementsByClass("productLink").attr("href").toString();
             found = false;
@@ -233,7 +230,7 @@ public class screenScraper {
             productList prodList = new productList();
             ArrayList<productItem> itemList = new ArrayList<productItem>();
             for(Element outList : fixedList) {
-                System.out.println(outList.getElementsByClass("productLink").attr("href"));
+                //System.out.println(outList.getElementsByClass("productLink").attr("href"));
 
 
                 itemList.add(additionalItemsDetail(outList, prodList));
@@ -246,12 +243,12 @@ public class screenScraper {
             prodList.vat = BigDecimal.valueOf(prodList.vat).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
             prodList.gross = BigDecimal.valueOf(prodList.gross).setScale(2,RoundingMode.HALF_EVEN).doubleValue();
 
-            System.out.println(prodList.toString());
+            //System.out.println(prodList.toString());
 
-            System.out.println("---------------");
-            System.out.println("");
+            //System.out.println("---------------");
+            //System.out.println("");
             String jsonResponse = mapper.writeValueAsString(prodList);
-            System.out.println(jsonResponse);
+            //System.out.println(jsonResponse);
 
 
             return prodList;
@@ -281,7 +278,7 @@ public class screenScraper {
         try {
             // Here we create a document object and use JSoup to fetch the website
             Document doc = Jsoup.connect("http://devtools.truecommerce.net:8080" + suffix).get();
-            System.out.printf("Title: %s\n", doc.title());
+            //System.out.printf("Title: %s\n", doc.title());
 
             String productTitle= doc.getElementsByClass("productDescription1").text();
             String productPrice = doc.getElementsByClass("productUnitPrice").text();
@@ -302,7 +299,7 @@ public class screenScraper {
                 prodItem.setKals(productKal);
             }
 
-            System.out.println(prodItem);
+            //System.out.println(prodItem);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -323,12 +320,12 @@ public class screenScraper {
         String hrefA;
         String hrefB;
         boolean found = false;
-        System.out.println("----------------------------------------");
+        //System.out.println("----------------------------------------");
 
 
 
         for (Element element : dupeList){
-            System.out.println(element.getElementsByClass("productCrossSellDescription").text());
+            //System.out.println(element.getElementsByClass("productCrossSellDescription").text());
             if(!element.getElementsByClass("productCrossSellDescription").text().equals("")){
                 filteredList.add(element);
             }
@@ -337,7 +334,7 @@ public class screenScraper {
 
 
         for (Element element : filteredList){ //loop through main list
-            System.out.println(element.getElementsByClass("productCrossSellLink"));
+            //System.out.println(element.getElementsByClass("productCrossSellLink"));
             hrefA = element.getElementsByClass("productCrossSellDescription").text();
             found = false;
             for (Element iterCheck : fixedList){ //check if what we are trying to add already exists
